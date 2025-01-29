@@ -16,7 +16,7 @@ def generate_launch_description():
     )
 
     # List of robot names
-    robot_names = ["robot1", "robot2", "robot3"]
+    robot_names = ["robot1", "robot2", "robot3", "robot4", "robot5", "robot6"]
 
     # Launch descriptions for each robot
     launch_descriptions = []

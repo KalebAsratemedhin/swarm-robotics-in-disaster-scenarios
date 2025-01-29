@@ -98,12 +98,12 @@
       <robot_base_frame>${robot_name}/base_link</robot_base_frame>
     </plugin>
 
-    <plugin filename="libgazebo_ros2_control.so" name="${robot_name}_gazebo_ros2_control">
+    <!-- <plugin filename="libgazebo_ros2_control.so" name="${robot_name}_gazebo_ros2_control">
       <ros>
         <namespace>${robot_name}</namespace>
       </ros>
       <parameters>$(find my_robot)/config/${robot_name}_controllers.yaml</parameters>
-    </plugin>
+    </plugin> -->
   </gazebo>
 
 </robot>
