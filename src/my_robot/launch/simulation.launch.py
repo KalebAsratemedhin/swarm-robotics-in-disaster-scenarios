@@ -4,19 +4,30 @@ from launch.actions import IncludeLaunchDescription
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from ament_index_python.packages import get_package_share_directory
 from launch_ros.actions import Node
+from launch.substitutions import LaunchConfiguration
+from launch.actions import DeclareLaunchArgument
 
 def generate_launch_description():
     pkg_share = get_package_share_directory('my_robot')
+    world_file = os.path.join(pkg_share, 'worlds', 'realistic_rescue.world')
 
-    # Start Gazebo
+    # Declare world argument
+    declare_world_arg = DeclareLaunchArgument(
+        'world',
+        default_value=world_file,
+        description='Full path to the Gazebo world file'
+    )
+
+    # Start Gazebo with custom world
     gazebo_launch = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
             os.path.join(get_package_share_directory('gazebo_ros'), 'launch', 'gazebo.launch.py')
-        )
+        ),
+        launch_arguments={'world': LaunchConfiguration('world')}.items()
     )
 
     # List of robot names
-    robot_names = ["robot1", "robot2", "robot3", "robot4", "robot5", "robot6"]
+    robot_names = ["robot1", "robot2", "robot3"]
 
     # Launch descriptions for each robot
     launch_descriptions = []
@@ -42,4 +53,4 @@ def generate_launch_description():
 
         launch_descriptions.extend([robot_state_publisher, spawn_entity])
 
-    return LaunchDescription([gazebo_launch] + launch_descriptions)
+    return LaunchDescription([declare_world_arg, gazebo_launch] + launch_descriptions)

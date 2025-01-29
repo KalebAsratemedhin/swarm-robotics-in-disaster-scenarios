@@ -24,6 +24,11 @@ if(BUILD_TESTING)
   ament_lint_auto_find_test_dependencies()
 endif()
 
+# Install the worlds directory
+install(DIRECTORY worlds/
+  DESTINATION share/${PROJECT_NAME}/worlds
+)
+
 
 install(
   DIRECTORY urdf config launch

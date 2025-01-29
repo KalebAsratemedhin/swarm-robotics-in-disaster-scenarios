@@ -21,5 +21,10 @@
 
   <export>
     <build_type>ament_cmake</build_type>
+
+    <gazebo_ros>
+      <gazebo>share/${prefix}/worlds</gazebo>
+    </gazebo_ros>
   </export>
+
 </package>
