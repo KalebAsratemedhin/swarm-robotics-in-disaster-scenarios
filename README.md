@@ -1,1 +1,0 @@
-# swarm-robotics-in-disaster-scenarios
