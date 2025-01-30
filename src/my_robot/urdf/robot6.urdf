@@ -1,17 +1,14 @@
 <?xml version="1.0"?>
-<robot name="${robot_name}" xmlns:xacro="http://www.ros.org/wiki/xacro">
+<robot name="robot6" xmlns:xacro="http://www.ros.org/wiki/xacro">
 
-<xacro:arg name="robot_name" default="default_robot"/>
-
-  
   <!-- Base Link -->
-  <link name="${robot_name}_base_link">
+  <link name="robot6_base_link">
     <visual>
       <geometry>
         <cylinder radius="0.2" length="0.1"/>
       </geometry>
-      <material name="blue">
-        <color rgba="0 0 0.8 1"/>
+      <material name="red">
+        <color rgba="0.8 0 0 1"/>
       </material>
     </visual>
     <collision>
@@ -26,7 +23,7 @@
   </link>
 
   <!-- Left Wheel -->
-  <link name="${robot_name}_left_wheel">
+  <link name="robot6_left_wheel">
     <visual>
       <geometry>
         <cylinder radius="0.05" length="0.05"/>
@@ -47,7 +44,7 @@
   </link>
 
   <!-- Right Wheel -->
-  <link name="${robot_name}_right_wheel">
+  <link name="robot6_right_wheel">
     <visual>
       <geometry>
         <cylinder radius="0.05" length="0.05"/>
@@ -66,35 +63,35 @@
   </link>
 
   <!-- Joints -->
-  <joint name="${robot_name}_left_wheel_joint" type="continuous">
-    <parent link="${robot_name}_base_link"/>
-    <child link="${robot_name}_left_wheel"/>
+  <joint name="robot6_left_wheel_joint" type="continuous">
+    <parent link="robot6_base_link"/>
+    <child link="robot6_left_wheel"/>
     <origin xyz="0 0.15 -0.05" rpy="1.5708 0 0"/>
     <axis xyz="0 0 1"/>
   </joint>
 
-  <joint name="${robot_name}_right_wheel_joint" type="continuous">
-    <parent link="${robot_name}_base_link"/>
-    <child link="${robot_name}_right_wheel"/>
+  <joint name="robot6_right_wheel_joint" type="continuous">
+    <parent link="robot6_base_link"/>
+    <child link="robot6_right_wheel"/>
     <origin xyz="0 -0.15 -0.05" rpy="1.5708 0 0"/>
     <axis xyz="0 0 1"/>
   </joint>
 
   <!-- Gazebo Plugins -->
   <gazebo>
-    <plugin filename="libgazebo_ros_diff_drive.so" name="${robot_name}_diff_drive">
+    <plugin filename="libgazebo_ros_diff_drive.so" name="robot6_diff_drive">
       <ros>
-        <namespace>${robot_name}</namespace>
+        <namespace>robot6</namespace>
       </ros>
-      <left_joint>${robot_name}_left_wheel_joint</left_joint>
-      <right_joint>${robot_name}_right_wheel_joint</right_joint>
+      <left_joint>robot6_left_wheel_joint</left_joint>
+      <right_joint>robot6_right_wheel_joint</right_joint>
       <wheel_separation>0.3</wheel_separation>
       <wheel_diameter>0.1</wheel_diameter>
       <wheel_torque>10</wheel_torque>
       <command_topic>cmd_vel</command_topic>
       <odometry_topic>odom</odometry_topic>
-      <odometry_frame>${robot_name}_odom</odometry_frame>
-      <robot_base_frame>${robot_name}_base_link</robot_base_frame>
+      <odometry_frame>robot6_odom</odometry_frame>
+      <robot_base_frame>robot6_base_link</robot_base_frame>
     </plugin>
   </gazebo>
 

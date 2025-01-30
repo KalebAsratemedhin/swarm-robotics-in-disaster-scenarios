@@ -1,0 +1,14 @@
+joint_state_broadcaster:
+  type: joint_state_broadcaster/JointStateBroadcaster
+
+diff_drive_controller:
+  type: diff_drive_controller/DiffDriveController  # Missing type!
+  left_wheel_names: ["robot1_left_wheel_joint"]
+  right_wheel_names: ["robot1_right_wheel_joint"]
+  odom_frame_id: robot1_odom
+  base_frame_id: robot1_base_link
+  pose_covariance_diagonal: [0.001, 0.001, 0.001, 0.001, 0.001, 0.03]
+  twist_covariance_diagonal: [0.001, 0.001, 0.001, 0.001, 0.001, 0.03]
+  open_loop: false
+  cmd_vel_timeout: 0.5
+  use_stamped_vel: false
