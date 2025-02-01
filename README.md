@@ -27,7 +27,7 @@ solutions.
 ## How to Run
 1. Clone the repo
    ```
-   git clone https://github.com/KalebAsratemedhin/swarm-robotics-in-disaster-scenarios
+   git clone https://github.com/KalebAsratemedhin/swarm-robotics-in-disaster-scenarios.git
    cd swarm-robotics-in-disaster-scenarios
    ```
 3. Make sure you are using ros2-humble and gazebo fortress
@@ -37,3 +37,4 @@ solutions.
     ros2 launch my_robot simulation.launch.py
   
   ```
+4. 

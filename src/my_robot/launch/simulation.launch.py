@@ -1,15 +1,15 @@
 import os
 from launch import LaunchDescription
-from launch.actions import IncludeLaunchDescription
+from launch.actions import IncludeLaunchDescription, DeclareLaunchArgument
 from launch.launch_description_sources import PythonLaunchDescriptionSource
-from ament_index_python.packages import get_package_share_directory
 from launch_ros.actions import Node
+from ament_index_python.packages import get_package_share_directory
 from launch.substitutions import LaunchConfiguration
-from launch.actions import DeclareLaunchArgument
+import math
 
 def generate_launch_description():
     pkg_share = get_package_share_directory('my_robot')
-    world_file = os.path.join(pkg_share, 'worlds', 'realistic_rescue.world')
+    world_file = os.path.join(pkg_share, 'worlds', 'realistic_rescue.sdf')
 
     # Declare world argument
     declare_world_arg = DeclareLaunchArgument(
@@ -26,31 +26,54 @@ def generate_launch_description():
         launch_arguments={'world': LaunchConfiguration('world')}.items()
     )
 
-    # List of robot names
-    robot_names = ["robot1", "robot2", "robot3"]
+    # Nodes to spawn robots in a circular formation
+    spawn_robots = []
+    num_robots = 3  # Define the number of robots in the swarm
+    radius = 5  # Define the radius of the circle
 
-    # Launch descriptions for each robot
-    launch_descriptions = []
-    for robot_name in robot_names:
+    for i in range(num_robots):
+        robot_name = f"robot{i + 1}"
+        robot_urdf = f"robot{i + 1}.urdf"
+        robot_urdf_path = os.path.join(pkg_share, 'urdf', robot_urdf)
+
+        # Calculate the robot's position on the circle (polar to Cartesian conversion)
+        angle = (2 * math.pi / num_robots) * i  # Evenly distributed angle
+        x_position = radius * math.cos(angle)
+        y_position = radius * math.sin(angle)
+
         # Robot State Publisher
         robot_state_publisher = Node(
             package='robot_state_publisher',
             executable='robot_state_publisher',
             name=f'{robot_name}_state_publisher',
-            output='screen',
             namespace=robot_name,
-            parameters=[{'robot_description': open(os.path.join(pkg_share, 'urdf', 'my_robot.xacro')).read()}],
-            arguments=[os.path.join(pkg_share, 'urdf', 'my_robot.xacro'), 'robot_name:=' + robot_name]
+            output='screen',
+            parameters=[{'robot_description': open(robot_urdf_path).read()}]
         )
 
-        # Spawn Entity
+        # Spawn Entity at the calculated position
         spawn_entity = Node(
             package='gazebo_ros',
             executable='spawn_entity.py',
-            arguments=['-entity', robot_name, '-topic', f'{robot_name}/robot_description', '-x', str(robot_names.index(robot_name) * 2.0), '-y', '0', '-z', '0.1'],
+            arguments=['-entity', robot_name, '-file', robot_urdf_path, '-x', f"{x_position}", '-y', f"{y_position}", '-z', '0.1'],
             output='screen'
         )
 
-        launch_descriptions.extend([robot_state_publisher, spawn_entity])
+        swarm_controller = Node(
+            package='my_robot',
+            executable='obstacle_avoidance',  
+            output='screen',
+            namespace=robot_name
+        )
 
-    return LaunchDescription([declare_world_arg, gazebo_launch] + launch_descriptions)
+        spawn_robots.extend([robot_state_publisher, spawn_entity, swarm_controller])
+
+    
+
+    # swarm_mover = Node(
+    #     package='my_robot',
+    #     executable='swarm_controller',  
+    #     output='screen'
+    # )
+
+    return LaunchDescription([declare_world_arg, gazebo_launch] + spawn_robots)

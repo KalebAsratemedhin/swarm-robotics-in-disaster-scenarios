@@ -1,0 +1,184 @@
+<?xml version="1.0"?>
+<robot name="robot3" xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+  <!-- Base Link -->
+  <link name="robot3_base_link">
+    <visual>
+      <geometry>
+        <cylinder radius="0.2" length="0.1"/>
+      </geometry>
+      <material name="blue">
+        <color rgba="0 0 0.8 1"/>
+      </material>
+    </visual>
+    <collision>
+      <geometry>
+        <cylinder radius="0.2" length="0.1"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="5"/>
+      <inertia ixx="0.1" ixy="0" ixz="0" iyy="0.1" iyz="0" izz="0.1"/>
+    </inertial>
+  </link>
+
+  <!-- Left Wheel -->
+  <link name="robot3_left_wheel">
+    <visual>
+      <geometry>
+        <cylinder radius="0.05" length="0.05"/>
+      </geometry>
+      <material name="black">
+        <color rgba="0 0 0 1"/>
+      </material>
+    </visual>
+    <collision>
+      <geometry>
+        <cylinder radius="0.05" length="0.05"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="1"/>
+      <inertia ixx="0.01" ixy="0" ixz="0" iyy="0.01" iyz="0" izz="0.01"/>
+    </inertial>
+  </link>
+
+  <!-- Right Wheel -->
+  <link name="robot3_right_wheel">
+    <visual>
+      <geometry>
+        <cylinder radius="0.05" length="0.05"/>
+      </geometry>
+      <material name="black"/>
+    </visual>
+    <collision>
+      <geometry>
+        <cylinder radius="0.05" length="0.05"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="1"/>
+      <inertia ixx="0.01" ixy="0" ixz="0" iyy="0.01" iyz="0" izz="0.01"/>
+    </inertial>
+  </link>
+
+  <!-- Camera -->
+  <link name="robot3_camera_link">
+    <visual>
+      <geometry>
+        <box size="0.1 0.1 0.1"/>
+      </geometry>
+      <material name="blue"/>
+    </visual>
+  </link>
+
+  <joint name="robot3_camera_joint" type="fixed">
+    <parent link="robot3_base_link"/>
+    <child link="robot3_camera_link"/>
+    <origin xyz="0.2 0 0.15" rpy="0 -1.5708 0"/> 
+  </joint>
+
+  <gazebo reference="robot3_camera_link">
+    <sensor name="robot3_camera" type="camera">
+      <camera>
+        <horizontal_fov>1.57</horizontal_fov>
+        <image>
+          <width>640</width>
+          <height>480</height>
+        </image>
+      </camera>
+      <always_on>true</always_on>
+      <update_rate>30</update_rate>
+      <plugin name="robot3_camera_plugin" filename="libgazebo_ros_camera.so">
+        <ros>
+          <namespace>/</namespace>
+          <remapping>~/image_raw:=robot3/camera/image_raw</remapping>
+        </ros>
+        <camera_name>robot3_camera</camera_name>
+        <frame_name>robot3_camera_link</frame_name>
+      </plugin>
+    </sensor>
+  </gazebo>
+
+  <!-- Lidar Sensor -->
+  <gazebo reference="robot3_base_link">
+    <sensor name="robot3_lidar" type="ray">
+      <pose>0 0 0.2 0 0 0</pose>
+      <visualize>true</visualize>
+      <update_rate>10</update_rate>
+      <ray>
+        <scan>
+          <horizontal>
+            <samples>360</samples>
+            <resolution>1</resolution>
+            <min_angle>-3.1415</min_angle>
+            <max_angle>3.1415</max_angle>
+          </horizontal>
+        </scan>
+        <range>
+          <min>0.1</min>
+          <max>5.0</max>
+          <resolution>0.01</resolution>
+        </range>
+      </ray>
+      <plugin name="robot3_lidar_plugin" filename="libgazebo_ros_ray_sensor.so">
+        <ros>
+          <namespace>/</namespace>
+          <remapping>~/out:=robot3/scan</remapping>
+        </ros>
+        <output_type>sensor_msgs/LaserScan</output_type>
+        <frame_name>robot3_base_link</frame_name>
+      </plugin>
+    </sensor>
+  </gazebo>
+
+  <!-- Joints -->
+  <joint name="robot3_left_wheel_joint" type="continuous">
+    <parent link="robot3_base_link"/>
+    <child link="robot3_left_wheel"/>
+    <origin xyz="0 0.15 -0.05" rpy="1.5708 0 0"/>
+    <axis xyz="0 0 1"/>
+  </joint>
+
+  <joint name="robot3_right_wheel_joint" type="continuous">
+    <parent link="robot3_base_link"/>
+    <child link="robot3_right_wheel"/>
+    <origin xyz="0 -0.15 -0.05" rpy="1.5708 0 0"/>
+    <axis xyz="0 0 1"/>
+  </joint>
+
+  <!-- Gazebo Plugins -->
+  <gazebo>
+    <plugin filename="libgazebo_ros_diff_drive.so" name="robot3_diff_drive">
+      <ros>
+        <!-- Remove namespace to prevent topic nesting -->
+        <namespace>robot3</namespace>
+
+      </ros>
+      <left_joint>robot3_left_wheel_joint</left_joint>
+      <right_joint>robot3_right_wheel_joint</right_joint>
+      <wheel_separation>0.3</wheel_separation>
+      <wheel_diameter>0.1</wheel_diameter>
+      <wheel_torque>10</wheel_torque>
+      <!-- Explicit absolute topic names -->
+      <command_topic>robot3/cmd_vel</command_topic>
+      <odometry_topic>robot3/odom</odometry_topic>
+      <!-- Corrected frame names -->
+      <odometry_frame>robot3/odom</odometry_frame>
+      <robot_base_frame>robot3/base_link</robot_base_frame>
+      <!-- Explicitly enable odometry publishing -->
+      <publish_odom>true</publish_odom>
+      <publish_odom_tf>true</publish_odom_tf>
+      <publish_wheel_tf>false</publish_wheel_tf>
+    </plugin>
+  </gazebo>
+
+  <!-- Add TF Broadcast Configuration -->
+  <gazebo>
+    <plugin filename="libgazebo_ros_tf_plugin.so" name="robot3_tf_publisher">
+      <frameName>robot3/base_link</frameName>
+      <childFrameName>robot3/odom</childFrameName>
+      <updateRate>50</updateRate>
+    </plugin>
+  </gazebo>
+</robot>

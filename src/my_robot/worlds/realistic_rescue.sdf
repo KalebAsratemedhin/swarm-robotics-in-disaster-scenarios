@@ -8,21 +8,17 @@
       <max_step_size>0.001</max_step_size>
     </physics>
 
-
-
     <!-- Add Sunlight -->
     <include>
       <uri>model://sun</uri>
     </include>
-
-
 
     <!-- Ground Plane -->
     <include>
       <uri>model://ground_plane</uri>
     </include>
 
-    <!-- Maze Walls (Increased Number) -->
+    <!-- Existing Maze Walls -->
     <model name="wall1">
       <static>true</static>
       <pose>0 3 0 0 0 0</pose>
@@ -211,6 +207,103 @@
           </geometry>
           <material>
             <ambient>1 0 0 1</ambient>
+          </material>
+        </visual>
+      </link>
+    </model>
+
+    <!-- Surrounding Walls to Contain Robots -->
+    <model name="left_wall">
+      <static>true</static>
+      <pose>-5 -1.5 0 0 0 0</pose>
+      <link name="link">
+        <collision name="collision">
+          <geometry>
+            <box>
+              <size>0.5 11 2</size>
+            </box>
+          </geometry>
+        </collision>
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>0.5 11 2</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.5 0.3 0.3 1</ambient>
+          </material>
+        </visual>
+      </link>
+    </model>
+
+    <model name="right_wall">
+      <static>true</static>
+      <pose>4 -1.5 0 0 0 0</pose>
+      <link name="link">
+        <collision name="collision">
+          <geometry>
+            <box>
+              <size>0.5 11 2</size>
+            </box>
+          </geometry>
+        </collision>
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>0.5 11 2</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.5 0.3 0.3 1</ambient>
+          </material>
+        </visual>
+      </link>
+    </model>
+
+    <model name="top_wall">
+      <static>true</static>
+      <pose>-0.5 4 0 0 0 0</pose>
+      <link name="link">
+        <collision name="collision">
+          <geometry>
+            <box>
+              <size>9 0.5 2</size>
+            </box>
+          </geometry>
+        </collision>
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>9 0.5 2</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.5 0.3 0.3 1</ambient>
+          </material>
+        </visual>
+      </link>
+    </model>
+
+    <model name="bottom_wall">
+      <static>true</static>
+      <pose>-0.5 -7 0 0 0 0</pose>
+      <link name="link">
+        <collision name="collision">
+          <geometry>
+            <box>
+              <size>9 0.5 2</size>
+            </box>
+          </geometry>
+        </collision>
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>9 0.5 2</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.5 0.3 0.3 1</ambient>
           </material>
         </visual>
       </link>
