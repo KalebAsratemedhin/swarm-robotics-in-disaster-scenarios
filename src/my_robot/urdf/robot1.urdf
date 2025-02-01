@@ -75,7 +75,7 @@
   <joint name="robot1_camera_joint" type="fixed">
     <parent link="robot1_base_link"/>
     <child link="robot1_camera_link"/>
-    <origin xyz="0 0 0.35" rpy="0 0 0"/>
+    <origin xyz="0.2 0 0.15" rpy="0 -1.5708 0"/> 
   </joint>
 
   <gazebo reference="robot1_camera_link">

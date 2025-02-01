@@ -59,18 +59,21 @@ def generate_launch_description():
             output='screen'
         )
 
-        spawn_robots.extend([robot_state_publisher, spawn_entity])
+        swarm_controller = Node(
+            package='my_robot',
+            executable='obstacle_avoidance',  
+            output='screen',
+            namespace=robot_name
+        )
 
-    # swarm_controller = Node(
+        spawn_robots.extend([robot_state_publisher, spawn_entity, swarm_controller])
+
+    
+
+    # swarm_mover = Node(
     #     package='my_robot',
-    #     executable='obstacle_avoidance',  
+    #     executable='swarm_controller',  
     #     output='screen'
     # )
 
-    swarm_mover = Node(
-        package='my_robot',
-        executable='swarm_controller',  
-        output='screen'
-    )
-
-    return LaunchDescription([declare_world_arg, gazebo_launch,  swarm_mover] + spawn_robots)
+    return LaunchDescription([declare_world_arg, gazebo_launch] + spawn_robots)
