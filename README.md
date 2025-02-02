@@ -37,4 +37,8 @@ solutions.
     ros2 launch my_robot simulation.launch.py
   
   ```
-4. 
+## Demo
+![alt text](<screenshots/Screenshot from 2025-02-02 13-17-03.png>)
+![alt text](<screenshots/Screenshot from 2025-02-02 13-17-06.png>)
+![alt text](<screenshots/Screenshot from 2025-02-02 13-17-20.png>)
+![alt text](<screenshots/Screenshot from 2025-02-02 13-17-27.png>)
