@@ -25,51 +25,57 @@ def generate_launch_description():
         ),
         launch_arguments={'world': LaunchConfiguration('world')}.items()
     )
-
-    # Nodes to spawn robots in a circular formation
+    
     spawn_robots = []
-    num_robots = 3  # Define the number of robots in the swarm
-    radius = 5  # Define the radius of the circle
+    num_robots = 3
+    radius = 5
 
     for i in range(num_robots):
         robot_name = f"robot{i + 1}"
         robot_urdf = f"robot{i + 1}.urdf"
         robot_urdf_path = os.path.join(pkg_share, 'urdf', robot_urdf)
 
-        # Calculate the robot's position on the circle (polar to Cartesian conversion)
-        angle = (2 * math.pi / num_robots) * i  # Evenly distributed angle
-        x_position = radius * math.cos(angle)
-        y_position = radius * math.sin(angle)
+        # Calculate position
+        angle = (2 * math.pi / num_robots) * i
+        x = radius * math.cos(angle)
+        y = radius * math.sin(angle)
 
-        # Robot State Publisher
+        # Existing nodes
         robot_state_publisher = Node(
             package='robot_state_publisher',
             executable='robot_state_publisher',
-            name=f'{robot_name}_state_publisher',
             namespace=robot_name,
-            output='screen',
             parameters=[{'robot_description': open(robot_urdf_path).read()}]
         )
 
-        # Spawn Entity at the calculated position
         spawn_entity = Node(
             package='gazebo_ros',
             executable='spawn_entity.py',
-            arguments=['-entity', robot_name, '-file', robot_urdf_path, '-x', f"{x_position}", '-y', f"{y_position}", '-z', '0.1'],
+            arguments=['-entity', robot_name, '-file', robot_urdf_path, '-x', str(x), '-y', str(y), '-z', '0.1'],
             output='screen'
         )
 
-        swarm_controller = Node(
+        # Position Publisher Node
+        position_publisher = Node(
             package='my_robot',
-            executable='obstacle_avoidance',  
-            output='screen',
-            namespace=robot_name
+            executable='position_publisher',
+            namespace=robot_name,
+            output='screen'
         )
 
-        spawn_robots.extend([robot_state_publisher, spawn_entity, swarm_controller])
+        # Swarm Controller Node
+        swarm_controller = Node(
+            package='my_robot',
+            executable='collision_avoidance_flock',
+            namespace=robot_name,
+            output='screen'
+        )
 
-    
-
-
+        spawn_robots.extend([
+            robot_state_publisher,
+            spawn_entity,
+            position_publisher,
+            swarm_controller
+        ])
 
     return LaunchDescription([declare_world_arg, gazebo_launch] + spawn_robots)
